@@ -30,7 +30,7 @@ const LoginPage = () => {
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8"><path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.315 48.315 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" /></svg>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Selamat Datang</h1>
-          <p className="text-sm text-gray-500">Masuk untuk melanjutkan ke ReOil.</p>
+          <p className="text-sm text-gray-500">Masuk untuk melanjutkan ke DropOil.</p>
         </div>
 
         {error && <div className="bg-red-50 text-red-500 p-3 rounded-xl text-xs font-bold mb-4">{error}</div>}
@@ -59,7 +59,7 @@ const LoginPage = () => {
             {/* Info untuk dosen/penguji */}
             <div className="mt-8 p-3 bg-slate-50 border border-slate-100 rounded-xl text-center">
               <p className="text-[9px] text-slate-400 font-medium">INFO LOGIN DEFAULT</p>
-              <p className="text-[10px] text-slate-600 font-bold mt-1">Admin: admin@reoil.com | Pass: admin</p>
+              <p className="text-[10px] text-slate-600 font-bold mt-1">Admin: admin@DropOil.com | Pass: admin</p>
             </div>
           </div>
         </form>

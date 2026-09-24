@@ -10,15 +10,15 @@ const getDB = (key, defaultVal) => {
 const setDB = (key, val) => localStorage.setItem(key, JSON.stringify(val));
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => getDB('reoil_session', null));
+  const [user, setUser] = useState(() => getDB('DropOil_session', null));
 
   // Seed Data: Buat akun Admin otomatis jika belum ada pengguna sama sekali
   useEffect(() => {
-    const users = getDB('reoil_users', []);
+    const users = getDB('DropOil_users', []);
     if (users.length === 0) {
-      setDB('reoil_users', [{ 
+      setDB('DropOil_users', [{ 
         name: 'Admin Utama', 
-        email: 'admin@reoil.com', 
+        email: 'admin@DropOil.com', 
         password: 'admin', 
         role: 'admin' 
       }]);
@@ -26,19 +26,19 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (email, password) => {
-    const users = getDB('reoil_users', []);
+    const users = getDB('DropOil_users', []);
     const foundUser = users.find(u => u.email === email && u.password === password);
     
     if (foundUser) {
       setUser(foundUser);
-      setDB('reoil_session', foundUser);
+      setDB('DropOil_session', foundUser);
       return { success: true };
     }
     return { success: false, message: 'Email atau password salah!' };
   };
 
   const register = (name, email, password, role) => {
-    const users = getDB('reoil_users', []);
+    const users = getDB('DropOil_users', []);
     
     // Cek apakah email sudah terdaftar
     if (users.find(u => u.email === email)) {
@@ -47,17 +47,17 @@ export const AuthProvider = ({ children }) => {
 
     const newUser = { name, email, password, role };
     users.push(newUser);
-    setDB('reoil_users', users);
+    setDB('DropOil_users', users);
     
     // Otomatis login setelah berhasil daftar
     setUser(newUser);
-    setDB('reoil_session', newUser);
+    setDB('DropOil_session', newUser);
     return { success: true };
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('reoil_session');
+    localStorage.removeItem('DropOil_session');
   };
 
   return (

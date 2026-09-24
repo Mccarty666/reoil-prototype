@@ -12,9 +12,9 @@ const PengepulDashboard = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  const [minyak, setMinyak] = useState(() => getDB('reoil_minyak_kurir', 0));
-  const [riwayat, setRiwayat] = useState(() => getDB('reoil_riwayat_kurir', []));
-  const [pendingJemput, setPendingJemput] = useState(() => getDB('reoil_pending_jemput', 0));
+  const [minyak, setMinyak] = useState(() => getDB('DropOil_minyak_kurir', 0));
+  const [riwayat, setRiwayat] = useState(() => getDB('DropOil_riwayat_kurir', []));
+  const [pendingJemput, setPendingJemput] = useState(() => getDB('DropOil_pending_jemput', 0));
 
   const handleLogout = () => {
     logout();
@@ -23,42 +23,42 @@ const PengepulDashboard = () => {
 
   // TOMBOL KAMERA BAWAH -> Tarik Minyak dari Warga
   const handleScanWarga = () => {
-    const requestWarga = getDB('reoil_pending_jemput', 0);
+    const requestWarga = getDB('DropOil_pending_jemput', 0);
     if (requestWarga > 0) {
       // Pindahkan minyak ke Kurir
       const newMinyak = minyak + requestWarga;
       setMinyak(newMinyak);
-      setDB('reoil_minyak_kurir', newMinyak);
+      setDB('DropOil_minyak_kurir', newMinyak);
       
       // Hapus Request dari Warga
-      setDB('reoil_pending_jemput', 0);
+      setDB('DropOil_pending_jemput', 0);
       setPendingJemput(0);
 
       // Tambahkan saldo ke Warga (1 Liter = Rp 5.000)
-      const currentSaldoWarga = getDB('reoil_saldo_warga', 125000);
-      setDB('reoil_saldo_warga', currentSaldoWarga + (requestWarga * 5000));
+      const currentSaldoWarga = getDB('DropOil_saldo_warga', 125000);
+      setDB('DropOil_saldo_warga', currentSaldoWarga + (requestWarga * 5000));
 
       // Catat Riwayat
       const newRiwayat = [{ id: Date.now(), title: 'Jemput dari Warga', subtitle: `Selesai (${requestWarga} L)`, status: 'Selesai', color: 'green' }, ...riwayat];
       setRiwayat(newRiwayat);
-      setDB('reoil_riwayat_kurir', newRiwayat);
+      setDB('DropOil_riwayat_kurir', newRiwayat);
 
-      const adminLogs = getDB('reoil_log_admin', []);
-      setDB('reoil_log_admin', [{ id: Date.now(), title: 'Kurir Budi selesai jemput', subtitle: `Volume: ${requestWarga} L`, status: 'Baru saja', color: 'green' }, ...adminLogs]);
+      const adminLogs = getDB('DropOil_log_admin', []);
+      setDB('DropOil_log_admin', [{ id: Date.now(), title: 'Kurir Budi selesai jemput', subtitle: `Volume: ${requestWarga} L`, status: 'Baru saja', color: 'green' }, ...adminLogs]);
     }
   };
 
   const handleSetor = () => {
     if (minyak > 0) {
       // Pindahkan minyak ke pintu Pabrik
-      setDB('reoil_pending_pabrik', getDB('reoil_pending_pabrik', 0) + minyak);
+      setDB('DropOil_pending_pabrik', getDB('DropOil_pending_pabrik', 0) + minyak);
       
-      const newRiwayat = [{ id: Date.now(), title: 'Setor ke Pabrik ReOil', subtitle: 'Menunggu scan Pabrik', status: 'Pending', color: 'orange' }, ...riwayat];
+      const newRiwayat = [{ id: Date.now(), title: 'Setor ke Pabrik DropOil', subtitle: 'Menunggu scan Pabrik', status: 'Pending', color: 'orange' }, ...riwayat];
       setRiwayat(newRiwayat);
-      setDB('reoil_riwayat_kurir', newRiwayat);
+      setDB('DropOil_riwayat_kurir', newRiwayat);
 
       setMinyak(0);
-      setDB('reoil_minyak_kurir', 0);
+      setDB('DropOil_minyak_kurir', 0);
     }
   };
 

@@ -22,8 +22,8 @@ const PenyetorDashboardMobile = () => {
   const { user, logout } = useAuth(); // Memanggil data user dari Context
   const navigate = useNavigate();
 
-  const [saldo, setSaldo] = useState(() => getDB('reoil_saldo_warga', 125000));
-  const [riwayat, setRiwayat] = useState(() => getDB('reoil_riwayat_warga', []));
+  const [saldo, setSaldo] = useState(() => getDB('DropOil_saldo_warga', 125000));
+  const [riwayat, setRiwayat] = useState(() => getDB('DropOil_riwayat_warga', []));
   
   const [showModalSetor, setShowModalSetor] = useState(false);
   const [showModalTarik, setShowModalTarik] = useState(false);
@@ -35,7 +35,7 @@ const PenyetorDashboardMobile = () => {
   const [stokPabrik, setStokPabrik] = useState(0);
 
   useEffect(() => {
-    setSaldo(getDB('reoil_saldo_warga', 125000));
+    setSaldo(getDB('DropOil_saldo_warga', 125000));
   }, []);
 
   const handleLogout = () => {
@@ -49,12 +49,12 @@ const PenyetorDashboardMobile = () => {
     if (vol > 0) {
       const newRiwayat = [{ id: Date.now(), title: `Request Jemput (${vol} L)`, subtitle: 'Mencari Kurir...', status: 'Proses', color: 'orange' }, ...riwayat];
       setRiwayat(newRiwayat);
-      setDB('reoil_riwayat_warga', newRiwayat);
-      setDB('reoil_pending_jemput', getDB('reoil_pending_jemput', 0) + vol);
+      setDB('DropOil_riwayat_warga', newRiwayat);
+      setDB('DropOil_pending_jemput', getDB('DropOil_pending_jemput', 0) + vol);
       
-      const adminLogs = getDB('reoil_log_admin', []);
+      const adminLogs = getDB('DropOil_log_admin', []);
       // Menggunakan nama user secara dinamis pada log admin
-      setDB('reoil_log_admin', [{ id: Date.now(), title: `Warga ${user?.name || 'Warga'} request jemput`, subtitle: `Area: Bintaro (${vol} L)`, status: 'Baru saja', color: 'orange' }, ...adminLogs]);
+      setDB('DropOil_log_admin', [{ id: Date.now(), title: `Warga ${user?.name || 'Warga'} request jemput`, subtitle: `Area: Bintaro (${vol} L)`, status: 'Baru saja', color: 'orange' }, ...adminLogs]);
 
       setShowModalSetor(false);
       setInputVolume('');
@@ -67,10 +67,10 @@ const PenyetorDashboardMobile = () => {
     if (tarik && saldo >= tarik) {
       const newSaldo = saldo - tarik;
       setSaldo(newSaldo);
-      setDB('reoil_saldo_warga', newSaldo);
+      setDB('DropOil_saldo_warga', newSaldo);
       const newRiwayat = [{ id: Date.now(), title: `Tarik Saldo`, subtitle: 'Transfer Bank', status: `-Rp${(tarik/1000)}k`, color: 'gray' }, ...riwayat];
       setRiwayat(newRiwayat);
-      setDB('reoil_riwayat_warga', newRiwayat);
+      setDB('DropOil_riwayat_warga', newRiwayat);
       setShowModalTarik(false);
       setInputTarik('');
     } else {
@@ -80,31 +80,31 @@ const PenyetorDashboardMobile = () => {
 
   // FUNGSI BELI PRODUK DINAMIS
   const handleBeliProduk = (produk) => {
-    const stokSaatIni = getDB('reoil_produk_jadi', 85); 
+    const stokSaatIni = getDB('DropOil_produk_jadi', 85); 
 
     if (stokSaatIni > 0 && saldo >= produk.price) {
       // 1. Kurangi Saldo
       const newSaldo = saldo - produk.price;
       setSaldo(newSaldo);
-      setDB('reoil_saldo_warga', newSaldo);
+      setDB('DropOil_saldo_warga', newSaldo);
 
       // 2. Kurangi Stok Unit Pabrik
       const newStok = stokSaatIni - 1;
       setStokPabrik(newStok);
-      setDB('reoil_produk_jadi', newStok);
+      setDB('DropOil_produk_jadi', newStok);
 
       // 3. Catat Riwayat Warga
-      const newRiwayatWarga = [{ id: Date.now(), title: `Beli ${produk.name}`, subtitle: 'Toko ReOil', status: `-Rp${produk.price/1000}k`, color: 'gray' }, ...riwayat];
+      const newRiwayatWarga = [{ id: Date.now(), title: `Beli ${produk.name}`, subtitle: 'Toko DropOil', status: `-Rp${produk.price/1000}k`, color: 'gray' }, ...riwayat];
       setRiwayat(newRiwayatWarga);
-      setDB('reoil_riwayat_warga', newRiwayatWarga);
+      setDB('DropOil_riwayat_warga', newRiwayatWarga);
 
       // 4. Catat Penjualan di Pabrik (Nama pembeli dinamis)
-      const riwayatPabrik = getDB('reoil_riwayat_pabrik', []);
-      setDB('reoil_riwayat_pabrik', [{ id: Date.now(), title: 'Penjualan Produk', subtitle: `Dibeli oleh: ${user?.name || 'Warga'}`, volume: `-1 ${produk.name.split(' ')[0]}` }, ...riwayatPabrik]);
+      const riwayatPabrik = getDB('DropOil_riwayat_pabrik', []);
+      setDB('DropOil_riwayat_pabrik', [{ id: Date.now(), title: 'Penjualan Produk', subtitle: `Dibeli oleh: ${user?.name || 'Warga'}`, volume: `-1 ${produk.name.split(' ')[0]}` }, ...riwayatPabrik]);
 
       // 5. Catat Log Admin (Nama produk & pembeli dinamis)
-      const adminLogs = getDB('reoil_log_admin', []);
-      setDB('reoil_log_admin', [{ id: Date.now(), title: 'Transaksi Toko ReOil', subtitle: `${user?.name || 'Warga'} beli 1 ${produk.name}`, status: 'Baru saja', color: 'green' }, ...adminLogs]);
+      const adminLogs = getDB('DropOil_log_admin', []);
+      setDB('DropOil_log_admin', [{ id: Date.now(), title: 'Transaksi Toko DropOil', subtitle: `${user?.name || 'Warga'} beli 1 ${produk.name}`, status: 'Baru saja', color: 'green' }, ...adminLogs]);
 
       alert(`🎉 Berhasil membeli 1 ${produk.name}!`);
     } else if (stokSaatIni <= 0) {
@@ -115,7 +115,7 @@ const PenyetorDashboardMobile = () => {
   };
 
   const openToko = () => {
-    setStokPabrik(getDB('reoil_produk_jadi', 85)); 
+    setStokPabrik(getDB('DropOil_produk_jadi', 85)); 
     setShowModalToko(true);
   };
 
@@ -202,14 +202,14 @@ const PenyetorDashboardMobile = () => {
            <div className="flex flex-col items-center text-gray-400"><svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg><span className="text-[9px]">Profil</span></div>
         </div>
 
-        {/* MODAL TOKO REOIL DENGAN 5 PRODUK */}
+        {/* MODAL TOKO DropOil DENGAN 5 PRODUK */}
         {showModalToko && (
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-3xl p-5 w-full shadow-2xl flex flex-col max-h-[85vh]">
               
               {/* Header Toko */}
               <div className="flex justify-between items-center mb-4 shrink-0">
-                <h3 className="font-bold text-lg">Toko ReOil</h3>
+                <h3 className="font-bold text-lg">Toko DropOil</h3>
                 <span className="bg-orange-100 text-orange-600 text-xs font-bold px-3 py-1 rounded-full">Saldo: Rp {(saldo/1000)}k</span>
               </div>
               

@@ -12,13 +12,13 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
 
   // Membaca data Global yang disimpan oleh ekosistem
-  const [totalGlobal, setTotalGlobal] = useState(() => getDB('reoil_total_global', 3455));
-  const [adminLogs, setAdminLogs] = useState(() => getDB('reoil_log_admin', []));
+  const [totalGlobal, setTotalGlobal] = useState(() => getDB('DropOil_total_global', 3455));
+  const [adminLogs, setAdminLogs] = useState(() => getDB('DropOil_log_admin', []));
 
   // Auto-refresh jika ada aktivitas di tab lain
   useEffect(() => {
-    setTotalGlobal(getDB('reoil_total_global', 3455));
-    setAdminLogs(getDB('reoil_log_admin', []));
+    setTotalGlobal(getDB('DropOil_total_global', 3455));
+    setAdminLogs(getDB('DropOil_log_admin', []));
   }, []);
 
   const handleLogout = () => {
@@ -27,8 +27,8 @@ const AdminDashboard = () => {
   };
 
   const refreshLive = () => {
-    setTotalGlobal(getDB('reoil_total_global', 3455));
-    setAdminLogs(getDB('reoil_log_admin', []));
+    setTotalGlobal(getDB('DropOil_total_global', 3455));
+    setAdminLogs(getDB('DropOil_log_admin', []));
   };
 
   return (

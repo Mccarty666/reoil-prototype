@@ -11,7 +11,7 @@ const Navbar = () => {
     <nav className="bg-white shadow-sm px-6 md:px-10 py-4 flex flex-col md:flex-row justify-between items-center sticky top-0 z-50 gap-4">
       <div className="flex items-center gap-2">
         <div className="bg-primary text-white p-2 rounded-lg font-bold">R</div>
-        <h1 className="text-2xl font-semibold text-primary">ReOil</h1>
+        <h1 className="text-2xl font-semibold text-primary">DropOil</h1>
       </div>
       
       {/* Profil User dari "Database" */}

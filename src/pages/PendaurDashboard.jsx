@@ -12,20 +12,20 @@ const PendaurDashboard = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  const [stokGudang, setStokGudang] = useState(() => getDB('reoil_stok_pabrik', 455));
-  const [diolah, setDiolah] = useState(() => getDB('reoil_diolah_pabrik', 300));
+  const [stokGudang, setStokGudang] = useState(() => getDB('DropOil_stok_pabrik', 455));
+  const [diolah, setDiolah] = useState(() => getDB('DropOil_diolah_pabrik', 300));
   
   // State ini akan otomatis turun jika warga berbelanja di Toko
-  const [produkJadi, setProdukJadi] = useState(() => getDB('reoil_produk_jadi', 85));
-  const [riwayat, setRiwayat] = useState(() => getDB('reoil_riwayat_pabrik', []));
+  const [produkJadi, setProdukJadi] = useState(() => getDB('DropOil_produk_jadi', 85));
+  const [riwayat, setRiwayat] = useState(() => getDB('DropOil_riwayat_pabrik', []));
   
   const [showModalOlah, setShowModalOlah] = useState(false);
   const [inputOlah, setInputOlah] = useState('');
 
   // Sinkronisasi Data Live saat Pabrik menekan tombol refresh
   const refreshLive = () => {
-    setProdukJadi(getDB('reoil_produk_jadi', 85));
-    setRiwayat(getDB('reoil_riwayat_pabrik', []));
+    setProdukJadi(getDB('DropOil_produk_jadi', 85));
+    setRiwayat(getDB('DropOil_riwayat_pabrik', []));
   };
 
   const handleLogout = () => {
@@ -34,21 +34,21 @@ const PendaurDashboard = () => {
   };
 
   const handleScanKurir = () => {
-    const kurirSetor = getDB('reoil_pending_pabrik', 0);
+    const kurirSetor = getDB('DropOil_pending_pabrik', 0);
     if (kurirSetor > 0) {
       const newStok = stokGudang + kurirSetor;
       setStokGudang(newStok);
-      setDB('reoil_stok_pabrik', newStok);
-      setDB('reoil_pending_pabrik', 0);
+      setDB('DropOil_stok_pabrik', newStok);
+      setDB('DropOil_pending_pabrik', 0);
 
-      setDB('reoil_total_global', getDB('reoil_total_global', 3455) + kurirSetor);
+      setDB('DropOil_total_global', getDB('DropOil_total_global', 3455) + kurirSetor);
 
-      const newRiwayat = [{ id: Date.now(), title: 'Terima dari Kurir ReOil', subtitle: 'Baru saja', volume: `+${kurirSetor} L` }, ...riwayat];
+      const newRiwayat = [{ id: Date.now(), title: 'Terima dari Kurir DropOil', subtitle: 'Baru saja', volume: `+${kurirSetor} L` }, ...riwayat];
       setRiwayat(newRiwayat);
-      setDB('reoil_riwayat_pabrik', newRiwayat);
+      setDB('DropOil_riwayat_pabrik', newRiwayat);
 
-      const adminLogs = getDB('reoil_log_admin', []);
-      setDB('reoil_log_admin', [{ id: Date.now(), title: 'Pabrik terima setoran', subtitle: `Kurir (${kurirSetor} L)`, status: 'Baru saja', color: 'green' }, ...adminLogs]);
+      const adminLogs = getDB('DropOil_log_admin', []);
+      setDB('DropOil_log_admin', [{ id: Date.now(), title: 'Pabrik terima setoran', subtitle: `Kurir (${kurirSetor} L)`, status: 'Baru saja', color: 'green' }, ...adminLogs]);
     } else {
       alert("Belum ada Kurir yang menyetor ke Pabrik.");
     }
@@ -67,9 +67,9 @@ const PendaurDashboard = () => {
       setDiolah(totalDiolah);
       setProdukJadi(totalProduk);
 
-      setDB('reoil_stok_pabrik', sisaStok);
-      setDB('reoil_diolah_pabrik', totalDiolah);
-      setDB('reoil_produk_jadi', totalProduk); // Tambah stok yang akan ditarik ke Toko Warga
+      setDB('DropOil_stok_pabrik', sisaStok);
+      setDB('DropOil_diolah_pabrik', totalDiolah);
+      setDB('DropOil_produk_jadi', totalProduk); // Tambah stok yang akan ditarik ke Toko Warga
 
       setShowModalOlah(false);
       setInputOlah('');
