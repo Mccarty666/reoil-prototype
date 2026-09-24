@@ -6,7 +6,7 @@ const RegisterPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('Warga');
+  const [role, setRole] = useState('Penyetor'); // Default awal diubah ke Penyetor
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
@@ -108,7 +108,7 @@ const RegisterPage = () => {
                 </div>
               </div>
 
-              {/* Dropdown Role */}
+              {/* Dropdown Role yang Sudah Diperbarui */}
               <div>
                 <label className="text-[10px] font-bold text-gray-500 block mb-1 uppercase tracking-wider">Peran</label>
                 <div className="relative">
@@ -116,9 +116,9 @@ const RegisterPage = () => {
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-gray-400"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>
                   </div>
                   <select value={role} onChange={(e) => setRole(e.target.value)} disabled={isLoading} className="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-500 block p-3 pl-10 transition-all outline-none appearance-none font-medium cursor-pointer">
-                    <option value="Warga">Warga (Penyetor)</option>
-                    <option value="Kurir">Kurir (Penjemput)</option>
-                    <option value="Admin">Admin (Pengepul)</option>
+                    <option value="Penyetor">Penyetor</option>
+                    <option value="Pengepul">Pengepul</option>
+                    <option value="Pendaur Ulang">Pendaur Ulang</option>
                   </select>
                   <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-gray-400"><path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" /></svg>

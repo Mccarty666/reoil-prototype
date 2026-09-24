@@ -69,8 +69,7 @@ const LoginPage = () => {
             </p>
             
             <div className="mt-8 p-3 bg-slate-50 border border-slate-100 rounded-xl text-center">
-              <p className="text-[9px] text-slate-400 font-medium">INFO LOGIN DEFAULT</p>
-              <p className="text-[10px] text-slate-600 font-bold mt-1">Admin: admin@dropoil.com | Pass: admin</p>
+              <p className="text-[10px] text-slate-600 font-bold mt-1">Login dengan akun yang suda didaftarkan</p>
             </div>
           </div>
         </form>

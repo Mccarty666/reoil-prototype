@@ -6,29 +6,28 @@ import RegisterPage from './pages/RegisterPage';
 import PenyetorDashboardMobile from './pages/PenyetorDashboardMobile'; 
 import PengepulDashboard from './pages/PengepulDashboard';
 import PendaurDashboard from './pages/PendaurDashboard';
-import AdminDashboard from './pages/AdminDashboard';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();
-  if (!user) return <Navigate to="/login" />;
+  if (!user) return <Navigate to="/login" replace />;
   
   // Mencegah user mengakses halaman role lain
-  if (allowedRoles && !allowedRoles.includes(user.role)) return <Navigate to="/" />;
+  if (allowedRoles && !allowedRoles.includes(user.role)) return <Navigate to="/" replace />;
   
   return children;
 };
 
 const RoleBasedRedirect = () => {
   const { user } = useAuth();
-  if (!user) return <Navigate to="/login" />;
+  if (!user) return <Navigate to="/login" replace />;
   
-  // Penamaan role di sini HARUS sama persis dengan di RegisterPage
-  if (user.role === 'Warga') return <Navigate to="/penyetor" />;
-  if (user.role === 'Kurir') return <Navigate to="/pengepul" />;
-  if (user.role === 'Admin') return <Navigate to="/admin" />;
+  // Penamaan role di sini SEKARANG SUDAH SAMA dengan di RegisterPage
+  if (user.role === 'Penyetor') return <Navigate to="/penyetor" replace />;
+  if (user.role === 'Pengepul') return <Navigate to="/pengepul" replace />;
+  if (user.role === 'Pendaur Ulang') return <Navigate to="/pendaur" replace />;
   
   // Fallback (Pencegah layar putih jika role tidak dikenali)
-  return <Navigate to="/login" />;
+  return <Navigate to="/login" replace />;
 };
 
 function AppRoutes() {
@@ -46,20 +45,15 @@ function AppRoutes() {
 
         {/* Rute Terproteksi Berdasarkan Role yang Cocok */}
         <Route path="/penyetor" element={
-          <ProtectedRoute allowedRoles={['Warga']}><PenyetorDashboardMobile /></ProtectedRoute>
+          <ProtectedRoute allowedRoles={['Penyetor']}><PenyetorDashboardMobile /></ProtectedRoute>
         } />
         
         <Route path="/pengepul" element={
-          <ProtectedRoute allowedRoles={['Kurir']}><PengepulDashboard /></ProtectedRoute>
-        } />
-        
-        {/* Rute Admin (Bisa digabung jika admin juga mengurus pendaur) */}
-        <Route path="/admin" element={
-          <ProtectedRoute allowedRoles={['Admin']}><AdminDashboard /></ProtectedRoute>
+          <ProtectedRoute allowedRoles={['Pengepul']}><PengepulDashboard /></ProtectedRoute>
         } />
         
         <Route path="/pendaur" element={
-          <ProtectedRoute allowedRoles={['Admin']}><PendaurDashboard /></ProtectedRoute>
+          <ProtectedRoute allowedRoles={['Pendaur Ulang']}><PendaurDashboard /></ProtectedRoute>
         } />
       </Routes>
     </div>

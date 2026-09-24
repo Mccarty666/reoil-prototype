@@ -30,14 +30,15 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const initAuth = () => {
       const users = getDB('DropOil_users', []);
-      // Buat admin default jika database kosong
+      
+      // Buat akun sistem default jika database kosong
       if (users.length === 0) {
         setDB('DropOil_users', [{ 
           id: '1',
-          name: 'Admin Utama', 
+          name: 'Sistem Pusat', 
           email: 'admin@dropoil.com', 
           password: 'admin', 
-          role: 'Admin' 
+          role: 'Pendaur Ulang' // Role sudah disesuaikan dengan aturan baru
         }]);
       }
       
@@ -59,7 +60,7 @@ export const AuthProvider = ({ children }) => {
     if (foundUser) {
       setUser(foundUser);
       setDB('DropOil_session', foundUser);
-      return { success: true };
+      return { success: true, user: foundUser };
     }
     return { success: false, message: 'Email atau password salah!' };
   };
@@ -68,7 +69,7 @@ export const AuthProvider = ({ children }) => {
     const users = getDB('DropOil_users', []);
     
     if (users.some(u => u.email === email)) {
-      return { success: false, message: 'Email sudah digunakan!' };
+      return { success: false, message: 'Email sudah terdaftar!' };
     }
 
     const newUser = { 
@@ -96,11 +97,16 @@ export const AuthProvider = ({ children }) => {
 
   // Jangan render anak-anaknya (aplikasi) sampai pengecekan awal selesai
   if (isInitializing) {
-    return <div className="min-h-screen flex items-center justify-center">Memuat...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 font-poppins text-green-700 font-bold">
+        Memuat DropOil...
+      </div>
+    );
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    // Mengekspor `user` sekaligus `currentUser` agar tidak terjadi error bentrok variabel di halaman lain
+    <AuthContext.Provider value={{ user, currentUser: user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
