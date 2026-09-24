@@ -1,0 +1,12 @@
+@import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #ECF0F3;
+  color: #120701;
+}
