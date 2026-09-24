@@ -2,27 +2,54 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
-// Helper Database
+// Fungsi untuk berinteraksi dengan LocalStorage secara aman
 const getDB = (key, defaultVal) => {
-  const data = localStorage.getItem(key);
-  return data ? JSON.parse(data) : defaultVal;
+  try {
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : defaultVal;
+  } catch {
+    return defaultVal;
+  }
 };
-const setDB = (key, val) => localStorage.setItem(key, JSON.stringify(val));
+
+const setDB = (key, val) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(val));
+    // Trigger event agar komponen lain tahu localStorage berubah
+    window.dispatchEvent(new Event("storage"));
+  } catch (error) {
+    console.error("Gagal menyimpan ke LocalStorage:", error);
+  }
+};
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => getDB('DropOil_session', null));
+  const [user, setUser] = useState(null);
+  const [isInitializing, setIsInitializing] = useState(true);
 
-  // Seed Data: Buat akun Admin otomatis jika belum ada pengguna sama sekali
+  // Inisialisasi awal saat aplikasi dimuat
   useEffect(() => {
-    const users = getDB('DropOil_users', []);
-    if (users.length === 0) {
-      setDB('DropOil_users', [{ 
-        name: 'Admin Utama', 
-        email: 'admin@DropOil.com', 
-        password: 'admin', 
-        role: 'admin' 
-      }]);
-    }
+    const initAuth = () => {
+      const users = getDB('DropOil_users', []);
+      // Buat admin default jika database kosong
+      if (users.length === 0) {
+        setDB('DropOil_users', [{ 
+          id: '1',
+          name: 'Admin Utama', 
+          email: 'admin@dropoil.com', 
+          password: 'admin', 
+          role: 'Admin' 
+        }]);
+      }
+      
+      // Ambil sesi login saat ini
+      const currentSession = getDB('DropOil_session', null);
+      if (currentSession) {
+        setUser(currentSession);
+      }
+      setIsInitializing(false);
+    };
+
+    initAuth();
   }, []);
 
   const login = (email, password) => {
@@ -40,16 +67,22 @@ export const AuthProvider = ({ children }) => {
   const register = (name, email, password, role) => {
     const users = getDB('DropOil_users', []);
     
-    // Cek apakah email sudah terdaftar
-    if (users.find(u => u.email === email)) {
-      return { success: false, message: 'Email sudah terdaftar!' };
+    if (users.some(u => u.email === email)) {
+      return { success: false, message: 'Email sudah digunakan!' };
     }
 
-    const newUser = { name, email, password, role };
+    const newUser = { 
+      id: Date.now().toString(), // Beri ID unik
+      name, 
+      email, 
+      password, 
+      role 
+    };
+
     users.push(newUser);
     setDB('DropOil_users', users);
     
-    // Otomatis login setelah berhasil daftar
+    // Otomatis login setelah daftar
     setUser(newUser);
     setDB('DropOil_session', newUser);
     return { success: true };
@@ -58,7 +91,13 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('DropOil_session');
+    window.dispatchEvent(new Event("storage"));
   };
+
+  // Jangan render anak-anaknya (aplikasi) sampai pengecekan awal selesai
+  if (isInitializing) {
+    return <div className="min-h-screen flex items-center justify-center">Memuat...</div>;
+  }
 
   return (
     <AuthContext.Provider value={{ user, login, register, logout }}>

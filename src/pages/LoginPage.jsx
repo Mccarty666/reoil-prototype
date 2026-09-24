@@ -6,18 +6,30 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    const result = login(email, password);
-    
-    if (result.success) {
-      navigate('/'); 
-    } else {
-      setError(result.message);
+    setError('');
+    setIsLoading(true);
+
+    try {
+      const result = login(email, password);
+      
+      if (result.success) {
+        setTimeout(() => {
+          navigate('/', { replace: true }); 
+        }, 500);
+      } else {
+        setError(result.message);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setError('Terjadi kesalahan pada sistem.');
+      setIsLoading(false);
     }
   };
 
@@ -39,27 +51,26 @@ const LoginPage = () => {
           <div className="space-y-4">
             <div>
               <label className="text-xs font-bold text-gray-700 block mb-1">Email</label>
-              <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-green-500 text-sm font-medium" placeholder="Masukkan email" />
+              <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} disabled={isLoading} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-green-500 text-sm font-medium disabled:opacity-50" placeholder="Masukkan email" />
             </div>
 
             <div>
               <label className="text-xs font-bold text-gray-700 block mb-1">Password</label>
-              <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-green-500 text-sm font-medium" placeholder="Masukkan password" />
+              <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} disabled={isLoading} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-green-500 text-sm font-medium disabled:opacity-50" placeholder="Masukkan password" />
             </div>
           </div>
 
           <div className="mt-auto pt-6">
-            <button type="submit" className="w-full bg-gray-900 hover:bg-black text-white font-bold py-3.5 rounded-xl shadow-lg shadow-gray-900/20 active:scale-95 transition-transform">
-              Masuk
+            <button type="submit" disabled={isLoading} className="w-full bg-gray-900 hover:bg-black text-white font-bold py-3.5 rounded-xl shadow-lg shadow-gray-900/20 active:scale-95 transition-transform disabled:opacity-50 flex justify-center items-center">
+              {isLoading ? 'Memproses...' : 'Masuk'}
             </button>
             <p className="text-xs text-center text-gray-500 mt-4 font-medium">
               Belum punya akun? <Link to="/register" className="text-green-600 font-bold hover:underline">Daftar sekarang</Link>
             </p>
             
-            {/* Info untuk dosen/penguji */}
             <div className="mt-8 p-3 bg-slate-50 border border-slate-100 rounded-xl text-center">
               <p className="text-[9px] text-slate-400 font-medium">INFO LOGIN DEFAULT</p>
-              <p className="text-[10px] text-slate-600 font-bold mt-1">Admin: admin@DropOil.com | Pass: admin</p>
+              <p className="text-[10px] text-slate-600 font-bold mt-1">Admin: admin@dropoil.com | Pass: admin</p>
             </div>
           </div>
         </form>
